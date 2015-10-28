@@ -64,6 +64,25 @@ public class OptimalPath {
         return MathUtils.random(0, (screenWidth - CoinPath.COIN_WIDTH) / 2);
     }
 
+    //straight line
+    public float straightPath() {
+        float xPosition = (float) (screenWidth/2);
+        return xPosition;
+    }
+
+    //right line
+    public float rightPath() {
+        float xPosition = (float) (screenWidth-50);
+        return xPosition;
+    }
+    //left line
+    public float leftPath() {
+        float xPosition = (float) (50);
+        return xPosition;
+    }
+
+
+
     // computes the optimal path centered on the screen and randomizes the amplitude every half-period
     public float computeOptimalPath() {
         double t = (double) TimeUtils.nanoTime() - t0;

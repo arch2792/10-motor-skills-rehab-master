@@ -15,12 +15,19 @@ import java.util.Iterator;
 /**
  * A class to handle the spawning of coins and all other coin-related functionality
  */
-public class CoinPath {
+public class  CoinPath {
     public static final int COIN_WIDTH = 40;
     public static final int COIN_HEIGHT = 40;
     private Array<Rectangle> coins;
     private double lastCoinTime;
     private final double SPAWN_INTERVAL = 300000000.;
+
+    public int count1=10;
+    public int count2=10;
+    public int count3=10;
+    public int rightCount=10;
+    public int leftCount=10;
+
 
     // media files associated with a coin
     private Texture coinImage;
@@ -52,7 +59,10 @@ public class CoinPath {
         potOfGoldImage = new Texture(Gdx.files.internal("potOfGold.png"));
         potSound = Gdx.audio.newSound(Gdx.files.internal("rainbow.wav"));
 
-        // spawn the first coin
+        // spawn the first 20 coins to adjust
+        for(int i=0; i<20;i++) {
+            spawnStraightCoin();
+        }
         spawnCoin();
 
     }
@@ -60,7 +70,30 @@ public class CoinPath {
     // moves the coins up on the screen and spawns a coin every SPAWN_INTERVAL
     // checks for coins collected by the character and removes them, adding the points to the scoreboard
     public void updateCoinPath(Rectangle charShape, Character character) {
+
         if ((double)TimeUtils.nanoTime() - lastCoinTime > SPAWN_INTERVAL) {
+           if (count1>0){
+                spawnStraightCoin();
+                count1--;
+           }
+           else if (count1<=0 && rightCount>0){
+                spawnRightLineCoin();
+                rightCount--;
+           }
+           else if (count1<=0 && rightCount<=0 && count2>0 ){
+                spawnStraightCoin();
+                count2--;
+            }
+           else if (count1<=0 && rightCount<=0 && count2<=0 && leftCount>0){
+                spawnLeftLineCoin();
+                leftCount--;
+           }
+           else if (count1<=0 && rightCount<=0 && count2<=0 && leftCount<=0 && count3>0){
+                spawnStraightCoin();
+                count3--;
+            }
+
+          else if(count1<=0 && count2<=0 && count3<=0 && rightCount<=0 && leftCount<=0)
             spawnCoin();
         }
         if (potOfGoldRectangle != null) {
@@ -92,6 +125,41 @@ public class CoinPath {
             }
         }
     }
+
+    //spawn along straight line
+    private void spawnStraightCoin() {
+        Rectangle coin = new Rectangle();
+        coin.x = opt.straightPath() - COIN_WIDTH / 2;
+        coin.y = -COIN_HEIGHT;
+        coin.width = COIN_WIDTH;
+        coin.height = COIN_HEIGHT;
+        coins.add(coin);
+        lastCoinTime = (double) TimeUtils.nanoTime();
+    }
+
+    //spawn along right line
+    private void spawnRightLineCoin() {
+        Rectangle coin = new Rectangle();
+        coin.x = opt.rightPath();
+        coin.y = -COIN_HEIGHT;
+        coin.width = COIN_WIDTH;
+        coin.height = COIN_HEIGHT;
+        coins.add(coin);
+        lastCoinTime = (double) TimeUtils.nanoTime();
+    }
+
+    //spawn along left line
+    private void spawnLeftLineCoin() {
+        Rectangle coin = new Rectangle();
+        coin.x = opt.leftPath() - COIN_WIDTH / 2;
+        coin.y = -COIN_HEIGHT;
+        coin.width = COIN_WIDTH;
+        coin.height = COIN_HEIGHT;
+        coins.add(coin);
+        lastCoinTime = (double) TimeUtils.nanoTime();
+    }
+
+
 
     // spawns a coin along the optimal path
     private void spawnCoin() {
