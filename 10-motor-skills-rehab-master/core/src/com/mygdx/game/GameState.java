@@ -35,8 +35,14 @@ public class GameState extends com.badlogic.gdx.Game {
     // internal game state
     public Long startTime = System.currentTimeMillis();
     public boolean isRunning = false;
-    // default difficulty level
-    public static int difficultySetting = 1;
+
+    // set difficulty level
+    protected static int difficultySetting;
+    public static void setDifficultyLevel(int value) {
+        difficultySetting = value;
+    }
+
+
     // default speed of scrolling coins
     public static float gameScrollSpeed = 75 + 25 * difficultySetting;
     // default duration of game
@@ -70,7 +76,7 @@ public class GameState extends com.badlogic.gdx.Game {
         cp = new CoinPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, opt);
         powerPath = new PowerPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
         obstaclePath = new ObstaclePath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
-        wind = new Wind(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
+        wind = new Wind(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, difficultySetting);
 
         // instantiate the render components of the game
         batch = new SpriteBatch();
@@ -122,7 +128,7 @@ public class GameState extends com.badlogic.gdx.Game {
         updateCoinPathsPos();   // update coin paths
         character.update();     // update state of character
         powerPath.update(character); // update power path
-        obstaclePath.update(character);
+        obstaclePath.update(character, difficultySetting);
         gameScrollSpeed += .001; // increment the game speed
         Scoreboard.getInstance().updateScoreboard();
         // end game if it exceeds the duration set in settings

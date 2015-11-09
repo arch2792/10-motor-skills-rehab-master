@@ -24,14 +24,16 @@ public class Wind {
     private int height;                 // height of wind
     private boolean draw;
     private long lastTimeSpawned;       // last time spawned
-    private double strength = 5000;   // adjusted based off game difficulty
+    private double strength;   // adjusted based off game difficulty
     private int numberOfStepsToEnter = 0; // counter to keep track of wind entering
     private int numberOfStepsToExit = 0;  // counter ot keep track of wind exiting
     private int startingX;                  // starting location for wind on right
     private boolean onRight = false; // whether wind is on left or right
 
+    //set wind strength
+
     // Constructor to create a wind object
-    public Wind(int screenWidth, int screenHeight) {
+    public Wind(int screenWidth, int screenHeight, int value) {
         startingX = screenWidth;
         width = (int)(.3*texture.getWidth());
         height = (int)(.3*texture.getHeight());
@@ -42,7 +44,7 @@ public class Wind {
         wind.height = height;
         draw = true;
         lastTimeSpawned = TimeUtils.millis();
-        strength = 5000 + 1000*GameState.difficultySetting;
+        strength = 5000 + 2000*value;
 
     }
 
@@ -101,7 +103,7 @@ public class Wind {
     // starts the cloud entering process by setting a numberOfStepsToEnter
     public void enter() {
         // reset values
-        numberOfStepsToEnter = 12000;
+        numberOfStepsToEnter = 1200;
         numberOfStepsToExit = 0;
     }
 
@@ -123,7 +125,7 @@ public class Wind {
     // prepares the cloud to exit
     public void windExit(){
         // reset the exit steps
-        numberOfStepsToExit = 12000;
+        numberOfStepsToExit = 1200;
         numberOfStepsToEnter = 0;
         // set retreating texture
         if (onRight) {
@@ -134,8 +136,8 @@ public class Wind {
     }
 
     // returns how long wind will blow for
-    public int update() {
-        if (TimeUtils.millis() - lastTimeSpawned > 50000 && Math.random() > .999) {
+    public int update(int diffvalue) {
+        if (TimeUtils.millis() - lastTimeSpawned > 20000 + 2000*diffvalue  && Math.random() > .999) {
             // update Time
             lastTimeSpawned=TimeUtils.millis();
             return (int)((strength*Math.random())+strength);
@@ -178,11 +180,13 @@ public class Wind {
     }
 
     // returns the amount the character should be pushed by wind (1 and -1 represent normal character movement)
-    public float shiftAmount(){
+    public float shiftAmount(int diffval){
+      double shiftLBy = 0.3 + 0.25*diffval;
+        double shiftRBy = -0.3 + 0.25*diffval;
         if (onRight) {
-            return -.3f;
+            return (float) shiftRBy;
         }
-        return .3f;
+        return (float) shiftLBy;
     }
 
     // removes media files for memory

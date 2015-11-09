@@ -100,8 +100,10 @@ public class SettingScreen implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
                 GameState.difficultySetting = value;
+
                 game.gameScrollSpeed = 100 * value;
                 updateDiffSliderLabel(value);
+                GameState.setDifficultyLevel(value);
             }
         });
 

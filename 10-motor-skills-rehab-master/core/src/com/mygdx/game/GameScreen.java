@@ -32,6 +32,7 @@ public class GameScreen implements Screen {
     private Texture background;
     private float currentBgY;
     private long lastTimeBg;
+    public int diffvalue;
 
     // components of main game screen
     private Soundtrack soundtrack;
@@ -110,13 +111,13 @@ public class GameScreen implements Screen {
 
         // WIND GRAPHICS (cannot be done outside of class due to how libGDX works)
         if (game.wind.windActive) {
-            renderWind();
+            renderWind(diffvalue);
         }
 
         game.batch.end();
 
         if (!game.wind.windActive) {
-            loadWind();
+            loadWind(diffvalue);
         }
 
         updateBackgroundScroll();
@@ -157,9 +158,11 @@ public class GameScreen implements Screen {
     public void resize(int width, int height) {
     }
 
-    private void loadWind(){
+    private void loadWind(int diffval){
+        //this.diffvalue=diffvalue;
+        this.diffvalue = diffval;
         // 4% chance of spawning with enforced wait time in between spawns
-        game.wind.windDuration = game.wind.update();
+        game.wind.windDuration = game.wind.update(diffvalue);
         if (game.wind.windDuration != 0) {
             game.wind.windActive = true;
             System.out.println("Wind duration is "+game.wind.windDuration);
@@ -177,7 +180,7 @@ public class GameScreen implements Screen {
                     // COMMENCE CLOUD COMING OUT NOW
                     game.wind.enter();
                 }
-            }, 4.0f); // run for 4 seconds
+            }, 2.0f); // run for 4 seconds
 
             //create a timer to start wind in 7s (once wind is done entering)
             Timer.schedule(new Timer.Task() {
@@ -185,16 +188,17 @@ public class GameScreen implements Screen {
                 public void run() {
                     setWind(true);
                 }
-            }, 7.0f); // run for 7 seconds
+            }, 4.0f); // run for 7 seconds
 
         }
     }
 
-    private void renderWind(){
+    private void renderWind(int diffvalue){
+        this.diffvalue=diffvalue;
         if (game.wind.windBlowing) {
             game.wind.render(game.batch);
             // character is blown by the wind
-            game.character.shiftCharacterHorizontally(game.wind.shiftAmount());
+            game.character.shiftCharacterHorizontally(game.wind.shiftAmount(this.diffvalue));
         } else { // wind not blowing, but active - 3 options: alerting, entering, exiting
             if (game.wind.exiting()){ // if exiting (the check updates the position)
                 game.wind.render(game.batch);

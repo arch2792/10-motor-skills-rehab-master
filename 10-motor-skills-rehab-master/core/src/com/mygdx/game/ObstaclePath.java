@@ -24,9 +24,9 @@ public class ObstaclePath {
         screenHeight = sH;
     }
 
-    public void update(Character character) {
+    public void update(Character character, int value) {
         // determine if enough time has passed since last obstacle spawn
-        if (TimeUtils.millis() - lastObstacleSpawn > 20000 && Math.random() > .9) {
+        if (TimeUtils.millis() - (lastObstacleSpawn) > (10000)-(100*value)  && Math.random() > .9) {
             spawnObstacle();
         }
 
